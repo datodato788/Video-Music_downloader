@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamSync Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --glass: rgba(30, 41, 59, 0.7);
+            --primary: #6366f1; /* Indigo */
+            --secondary: #ec4899; /* Pink */
+            --accent: #06b6d4; /* Cyan */
+            --text: #f8fafc;
+            --danger: #ef4444;
+            --success: #10b981;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: 'Outfit', sans-serif;
+            background: radial-gradient(circle at top left, #1e1b4b, transparent 40%),
+                        radial-gradient(circle at bottom right, #312e81, transparent 40%),
+                        var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 580px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: floatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes floatUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        header { text-align: center; margin-bottom: 35px; }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+            background: linear-gradient(135deg, var(--accent), var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        p.subtitle { color: #94a3b8; font-size: 0.95rem; margin: 0; }
+
+        /* Input Area */
+        .input-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 320px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding-right: 5px;
+        }
+        
+        .input-list::-webkit-scrollbar { width: 4px; }
+        .input-list::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            transition: 0.2s;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        .input-icon { padding-left: 15px; color: #64748b; }
+
+        input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 14px 10px;
+            color: white;
+            font-family: inherit;
+            outline: none;
+            font-size: 0.95rem;
+        }
+
+        .action-icon-btn {
+            background: transparent;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            padding: 10px;
+            transition: 0.2s;
+        }
+
+        .action-icon-btn:hover { color: var(--text); }
+
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            border-radius: 10px;
+            width: 42px;
+            height: 44px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-delete:hover { background: var(--danger); color: white; }
+
+        /* Controls */
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        select {
+            width: 100%;
+            padding: 14px;
+            background: #1e293b;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: white;
+            font-family: inherit;
+            cursor: pointer;
+            outline: none;
+        }
+        select:focus { border-color: var(--primary); }
+
+        .btn-add {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px dashed rgba(255,255,255,0.2);
+            color: #94a3b8;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 25px;
+        }
+        .btn-add:hover { background: rgba(255,255,255,0.05); color: white; border-color: rgba(255,255,255,0.4); }
+
+        .btn-main {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.5);
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 15px 30px -5px rgba(236, 72, 153, 0.5); }
+        .btn-main:disabled { opacity: 0.7; cursor: wait; }
+
+        /* Status Cards */
+        .status-area { margin-top: 30px; display: flex; flex-direction: column; gap: 10px; }
+
+        .status-card {
+            background: rgba(15, 23, 42, 0.4);
+            padding: 12px 16px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 3px solid #334155;
+            transition: 0.3s;
+        }
+
+        .status-info { display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
+        .file-title { font-size: 0.85rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px; }
+        .file-status { font-size: 0.75rem; color: #64748b; }
+
+        /* Animations for Status */
+        .status-card.processing { border-left-color: var(--accent); animation: pulseBorder 2s infinite; }
+        .status-card.success { border-left-color: var(--success); background: rgba(16, 185, 129, 0.1); }
+        .status-card.error { border-left-color: var(--danger); background: rgba(239, 68, 68, 0.1); }
+
+        @keyframes pulseBorder { 50% { border-left-color: var(--primary); } }
+        
+        .spinner {
+            width: 18px; height: 18px;
+            border: 2px solid rgba(255,255,255,0.1); border-top-color: var(--accent);
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: #1e293b; color: white; padding: 12px 24px; border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
+            opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; align-items: center; gap: 10px; font-size: 0.9rem;
+            z-index: 1000;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>@datodato788</h1>
+            <p class="subtitle">Premium Batch Downloader</p>
+        </header>
+
+        <div id="urlList" class="input-list">
+            <div class="input-row">
+                <div class="input-wrapper">
+                    <i class="fas fa-link input-icon"></i>
+                    <input type="text" class="url-input" placeholder="Paste link here...">
+                    <button class="action-icon-btn" onclick="pasteFromClipboard(this)" title="Paste from Clipboard">
+                        <i class="far fa-clipboard"></i>
+                    </button>
+                </div>
+                <button class="btn-delete" onclick="removeRow(this)"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+
+        <button class="btn-add" onclick="addRow()"><i class="fas fa-plus"></i> Add Another Link</button>
+
+        <div class="controls">
+            <select id="format">
+                <option value="mp3">🎵 MP3 (Audio Only)</option>
+                <option value="mp4">🎬 MP4 (Video)</option>
+            </select>
+            <select id="quality">
+                <option value="320">💎 High Quality (320k/1080p)</option>
+                <option value="192">⚡ Standard (192k/720p)</option>
+                <option value="128">🍂 Data Saver (128k/480p)</option>
+            </select>
+        </div>
+
+        <button class="btn-main" onclick="processAll()" id="dlBtn">
+            START DOWNLOAD
+        </button>
+
+        <div id="statusArea" class="status-area"></div>
+    </div>
+
+    <div id="toast" class="toast"><i class="fas fa-info-circle"></i> <span>Message</span></div>
+
+    <script>
+        // --- UI Functions ---
+
+        function addRow() {
+            const container = document.getElementById('urlList');
+            const div = document.createElement('div');
+            div.className = 'input-row';
+            div.innerHTML = `
+                <div class="input-wrapper">
+                    <i class="fas fa-link input-icon"></i>
+                    <input type="text" class="url-input" placeholder="Paste link here...">
+                    <button class="action-icon-btn" onclick="pasteFromClipboard(this)" title="Paste"><i class="far fa-clipboard"></i></button>
+                </div>
+                <button class="btn-delete" onclick="removeRow(this)"><i class="fas fa-times"></i></button>
+            `;
+            container.appendChild(div);
+            div.querySelector('input').focus();
+        }
+
+        function removeRow(btn) {
+            const rows = document.querySelectorAll('.input-row');
+            if (rows.length > 1) {
+                btn.parentElement.remove();
+            } else {
+                btn.previousElementSibling.querySelector('input').value = '';
+                showToast("Cleared input field");
+            }
+        }
+
+        async function pasteFromClipboard(btn) {
+            try {
+                const text = await navigator.clipboard.readText();
+                const input = btn.previousElementSibling;
+                input.value = text;
+                showToast("Link pasted from clipboard!", "success");
+            } catch (err) {
+                showToast("Please allow clipboard access", "error");
+            }
+        }
+
+        function showToast(msg, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.querySelector('span').innerText = msg;
+            toast.className = `toast show ${type}`;
+            
+            // Icon logic
+            const icon = toast.querySelector('i');
+            icon.className = type === 'success' ? 'fas fa-check-circle' : 
+                             type === 'error' ? 'fas fa-exclamation-triangle' : 'fas fa-info-circle';
+            icon.style.color = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#60a5fa';
+
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        // --- Logic Functions ---
+
+        function getFileName(header, format) {
+            let filename = format === 'mp3' ? `Audio_${Date.now()}.mp3` : `Video_${Date.now()}.mp4`;
+            if (header && header.includes('filename=')) {
+                const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(header);
+                if (matches && matches[1]) {
+                    filename = matches[1].replace(/['"]/g, '');
+                }
+            }
+            return filename;
+        }
+
+        async function downloadSingle(url, format, quality, uiCard) {
+            const statusText = uiCard.querySelector('.file-status');
+            const iconArea = uiCard.querySelector('.status-icon');
+
+            uiCard.classList.add('processing');
+            statusText.innerText = "Processing on server...";
+            statusText.style.color = "#60a5fa"; // blue
+            iconArea.innerHTML = `<div class="spinner"></div>`;
+
+            try {
+                const response = await fetch('/download-single', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url, format, quality })
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const downloadUrl = window.URL.createObjectURL(blob);
+                    
+                    const disposition = response.headers.get('Content-Disposition');
+                    const filename = getFileName(disposition, format);
+
+                    // Trigger browser download
+                    const a = document.createElement('a');
+                    a.href = downloadUrl;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    
+                    // UI Success
+                    uiCard.classList.remove('processing');
+                    uiCard.classList.add('success');
+                    uiCard.querySelector('.file-title').innerText = filename; // Update real name
+                    statusText.innerText = "Download Complete";
+                    statusText.style.color = "#10b981";
+                    iconArea.innerHTML = `<i class="fas fa-check" style="color:#10b981"></i>`;
+                } else {
+                    throw new Error("Server Error");
+                }
+            } catch (e) {
+                uiCard.classList.remove('processing');
+                uiCard.classList.add('error');
+                statusText.innerText = "Failed to download";
+                statusText.style.color = "#ef4444";
+                iconArea.innerHTML = `<i class="fas fa-times" style="color:#ef4444"></i>`;
+            }
+        }
+
+        function processAll() {
+            const inputs = document.querySelectorAll('.url-input');
+            const format = document.getElementById('format').value;
+            const quality = document.getElementById('quality').value;
+            const statusArea = document.getElementById('statusArea');
+            
+            // Clear previous status
+            statusArea.innerHTML = '';
+            
+            let activeCount = 0;
+
+            inputs.forEach(input => {
+                const url = input.value.trim();
+                if (url) {
+                    activeCount++;
+                    
+                    // Create Status Card
+                    const card = document.createElement('div');
+                    card.className = 'status-card';
+                    card.innerHTML = `
+                        <div class="status-info">
+                            <div class="file-title">${url}</div>
+                            <div class="file-status">Queued...</div>
+                        </div>
+                        <div class="status-icon"><i class="far fa-clock"></i></div>
+                    `;
+                    statusArea.appendChild(card);
+
+                    // Start Download
+                    downloadSingle(url, format, quality, card);
+                }
+            });
+
+            if (activeCount === 0) {
+                showToast("Please paste at least one link!", "error");
+            } else {
+                showToast(`Started ${activeCount} downloads...`, "success");
+            }
+        }
+    </script>
+</body>
+</html>
