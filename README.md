@@ -1,5 +1,8 @@
-# 🎥 Video & Music Downloader
+<p align="center">
+  <img src="image.png" alt="Video & Music Downloader Banner" width="600">
+</p><br> 
 
+# 🎥 Video & Music Downloader
 A powerful and simple tool designed to download media content from various platforms across the internet.
 
 ## ✨ Features
